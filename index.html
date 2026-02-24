@@ -1871,6 +1871,15 @@ function handlePaymentResult() {
     var orderData  = JSON.parse(sessionStorage.getItem('tlcs_order') || '{}');
     sessionStorage.removeItem('tlcs_order');
 
+    /* 토스페이먼츠 결제 confirm */
+    fetch('/api/confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentKey: paymentKey, orderId: orderId, amount: Number(amount) }),
+    }).then(function(r) { return r.json(); })
+      .then(function(data) { console.log('결제 승인 완료:', data); })
+      .catch(function(err) { console.warn('결제 승인 실패:', err); });
+
     fetch(SHEET_CONFIG.WEB_APP_URL, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
